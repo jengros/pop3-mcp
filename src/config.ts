@@ -1,3 +1,5 @@
+import { readWindowsCredential } from "./credential.js";
+
 export interface Pop3Config {
   host: string;
   port: number;
@@ -19,11 +21,14 @@ function integerEnv(name: string, fallback: number, minimum: number, maximum: nu
 export function loadConfig(): Pop3Config {
   const host = process.env.POP3_HOST?.trim() ?? "";
   const username = process.env.POP3_USERNAME?.trim() ?? "";
-  const password = process.env.POP3_PASSWORD ?? "";
+  const credentialTarget = process.env.POP3_CREDENTIAL_TARGET?.trim() ?? "";
+  const password = credentialTarget
+    ? readWindowsCredential(credentialTarget)
+    : process.env.POP3_PASSWORD ?? "";
   const missing = [
     ["POP3_HOST", host],
     ["POP3_USERNAME", username],
-    ["POP3_PASSWORD", password]
+    ["POP3_PASSWORD or POP3_CREDENTIAL_TARGET", password]
   ].filter(([, value]) => !value).map(([name]) => name);
 
   if (missing.length > 0) {
@@ -39,5 +44,4 @@ export function loadConfig(): Pop3Config {
     maxMessageBytes: integerEnv("POP3_MAX_MESSAGE_BYTES", 10 * 1024 * 1024, 1024, 100 * 1024 * 1024)
   };
 }
-
 
