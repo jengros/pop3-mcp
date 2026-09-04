@@ -79,13 +79,13 @@ if (process.argv.includes("--set-credential")) {
   const target = argumentValue("--target");
   const username = argumentValue("--username");
   if (!target || !username) {
-    console.error("Usage: readonly-pop3-mcp --set-credential --target <name> --username <email>");
+    console.error("Usage: pop3-mcp --set-credential --target <name> --username <email>");
     process.exitCode = 2;
   } else {
     process.exitCode = runCredentialSetup(target, username);
   }
 } else {
   void serveStdio(createServer);
-  console.error("readonly-pop3-mcp running on stdio");
+  console.error("pop3-mcp running on stdio");
 }
 
