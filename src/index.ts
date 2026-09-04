@@ -3,6 +3,7 @@ import { McpServer } from "@modelcontextprotocol/server";
 import { serveStdio } from "@modelcontextprotocol/server/stdio";
 import * as z from "zod/v4";
 import { loadConfig } from "./config.js";
+import { runCredentialSetup } from "./credential.js";
 import { ReadOnlyPop3Client } from "./pop3.js";
 
 const textResult = (value: unknown) => ({
@@ -69,7 +70,22 @@ function createServer(): McpServer {
   return server;
 }
 
-void serveStdio(createServer);
-console.error("readonly-pop3-mcp running on stdio");
+function argumentValue(name: string): string {
+  const index = process.argv.indexOf(name);
+  return index >= 0 ? process.argv[index + 1] ?? "" : "";
+}
 
+if (process.argv.includes("--set-credential")) {
+  const target = argumentValue("--target");
+  const username = argumentValue("--username");
+  if (!target || !username) {
+    console.error("Usage: readonly-pop3-mcp --set-credential --target <name> --username <email>");
+    process.exitCode = 2;
+  } else {
+    process.exitCode = runCredentialSetup(target, username);
+  }
+} else {
+  void serveStdio(createServer);
+  console.error("readonly-pop3-mcp running on stdio");
+}
 
