@@ -2,12 +2,23 @@
   "name": "readonly-pop3-mcp",
   "version": "0.1.0",
   "description": "Strictly read-only POP3 MCP server for listing, reading, and searching email",
+  "keywords": ["mcp", "pop3", "email", "codex", "read-only"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jengros/readonly-pop3-mcp.git"
+  },
+  "homepage": "https://github.com/jengros/readonly-pop3-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/jengros/readonly-pop3-mcp/issues"
+  },
   "type": "module",
   "bin": {
     "readonly-pop3-mcp": "dist/index.js"
   },
   "files": [
-    "dist",
+    "dist/index.js",
+    "dist/config.js",
+    "dist/pop3.js",
     "README.md",
     "SECURITY.md",
     "LICENSE"
@@ -19,6 +30,9 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "^2.0.0",
@@ -32,5 +46,4 @@
   },
   "license": "MIT"
 }
-
 
