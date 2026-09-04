@@ -14,7 +14,15 @@ export interface MessageHeader {
 export interface ParsedMessage extends MessageHeader {
   body: string;
   bodyTruncated: boolean;
-  attachments: Array<{ filename: string; contentType: string; sizeBytes: number }>;
+  attachments: Array<{ index: number; filename: string; contentType: string; sizeBytes: number; contentId: string }>;
+}
+
+export interface ImageAttachment {
+  filename: string;
+  contentType: string;
+  sizeBytes: number;
+  contentId: string;
+  data: string;
 }
 
 class LineReader {
@@ -141,11 +149,36 @@ export async function parseMessage(raw: Buffer, uidl: string, maxBodyChars: numb
     messageId: parsed.messageId ?? "",
     body: body.slice(0, maxBodyChars),
     bodyTruncated: body.length > maxBodyChars,
-    attachments: parsed.attachments.map((item) => ({
+    attachments: parsed.attachments.map((item, index) => ({
+      index,
       filename: item.filename ?? "",
       contentType: item.contentType,
-      sizeBytes: item.size
+      sizeBytes: item.size,
+      contentId: item.contentId ?? ""
     }))
+  };
+}
+
+export async function parseImageAttachment(
+  raw: Buffer,
+  attachmentIndex: number,
+  maxAttachmentBytes: number
+): Promise<ImageAttachment> {
+  const parsed = await simpleParser(raw, { skipImageLinks: true, skipHtmlToText: true });
+  const attachment = parsed.attachments[attachmentIndex];
+  if (!attachment) throw new Error("Attachment index was not found");
+  if (!attachment.contentType.toLocaleLowerCase().startsWith("image/")) {
+    throw new Error("Requested attachment is not an image");
+  }
+  if (attachment.size > maxAttachmentBytes) {
+    throw new Error(`Image attachment exceeds maxBytes (${attachment.size} > ${maxAttachmentBytes})`);
+  }
+  return {
+    filename: attachment.filename ?? "",
+    contentType: attachment.contentType,
+    sizeBytes: attachment.size,
+    contentId: attachment.contentId ?? "",
+    data: attachment.content.toString("base64")
   };
 }
 
@@ -247,6 +280,23 @@ export class ReadOnlyPop3Client {
       }
       const lines = await session.multi(`RETR ${item.number}`);
       return parseMessage(Buffer.from(lines.join("\r\n"), "latin1"), uidl, maxBodyChars);
+    });
+  }
+
+  getImageAttachment(uidl: string, attachmentIndex: number, maxBytes: number): Promise<ImageAttachment> {
+    return withSession(this.config, async (session) => {
+      const item = parseUidl(await session.multi("UIDL")).find((candidate) => candidate.uidl === uidl);
+      if (!item) throw new Error("Message UIDL was not found");
+      const size = parseSizes(await session.multi("LIST")).get(item.number) ?? 0;
+      if (size > this.config.maxMessageBytes) {
+        throw new Error(`Message exceeds POP3_MAX_MESSAGE_BYTES (${size} > ${this.config.maxMessageBytes})`);
+      }
+      const lines = await session.multi(`RETR ${item.number}`);
+      return parseImageAttachment(
+        Buffer.from(lines.join("\r\n"), "latin1"),
+        attachmentIndex,
+        Math.min(maxBytes, this.config.maxMessageBytes)
+      );
     });
   }
 

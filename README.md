@@ -58,6 +58,14 @@ POP3_CREDENTIAL_TARGET=pop3-mcp:your-email@example.com
 The credential is encrypted by Windows for the signed-in user. Do not add
 `POP3_PASSWORD` when `POP3_CREDENTIAL_TARGET` is configured.
 
+### Image attachments
+
+`get_message` returns a zero-based `index` for each attachment. Use
+`get_image_attachment` with the message UIDL and that index to view an inline or
+attached image. Only `image/*` MIME types are returned, and the default image
+limit is 5 MiB (maximum 10 MiB). This remains read-only and never changes the
+message on the server.
+
 ### Cross-platform fallback
 
 Set credentials only for the current shell session:
