@@ -51,13 +51,13 @@ Manager and injects the password into the child process.
 ## Run with npx
 
 ```powershell
-npx --yes github:YOUR_GITHUB_ID/readonly-pop3-mcp
+npx --yes github:jengros/readonly-pop3-mcp
 ```
 
 ## Connect to Codex desktop
 
 Open **Settings > MCP servers > Add server**, select **STDIO**, set the command to
-`npx`, and set arguments to `--yes github:YOUR_GITHUB_ID/readonly-pop3-mcp`.
+`npx`, and set arguments to `--yes github:jengros/readonly-pop3-mcp`.
 Add `POP3_HOST`, `POP3_PORT`, `POP3_USERNAME`, and `POP3_PASSWORD` to the MCP
 process environment. Do not put the password in this repository or commit a
 Codex configuration file containing it.
