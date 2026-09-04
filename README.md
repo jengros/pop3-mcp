@@ -41,8 +41,8 @@ Store the password once. The prompt masks the password and the command does not
 place it in shell history:
 
 ```powershell
-npx -y readonly-pop3-mcp --set-credential `
-  --target "readonly-pop3-mcp:your-email@example.com" `
+npx -y pop3-mcp --set-credential `
+  --target "pop3-mcp:your-email@example.com" `
   --username "your-email@example.com"
 ```
 
@@ -52,7 +52,7 @@ Then configure these non-secret MCP environment values:
 POP3_HOST=mail.example.com
 POP3_PORT=995
 POP3_USERNAME=your-email@example.com
-POP3_CREDENTIAL_TARGET=readonly-pop3-mcp:your-email@example.com
+POP3_CREDENTIAL_TARGET=pop3-mcp:your-email@example.com
 ```
 
 The credential is encrypted by Windows for the signed-in user. Do not add
@@ -75,13 +75,13 @@ Windows Credential Manager on Windows.
 ## Run with npx
 
 ```powershell
-npx --yes readonly-pop3-mcp
+npx --yes pop3-mcp
 ```
 
 ## Connect to Codex desktop
 
 Open **Settings > MCP servers > Add server**, select **STDIO**, set the command to
-`npx`, and set arguments to `--yes readonly-pop3-mcp`.
+`npx`, and set arguments to `--yes pop3-mcp`.
 Add `POP3_HOST`, `POP3_PORT`, `POP3_USERNAME`, and `POP3_CREDENTIAL_TARGET` to
 the MCP process environment. The target name is not a secret. Do not add
 `POP3_PASSWORD` when using Windows Credential Manager.
