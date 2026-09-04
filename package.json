@@ -5,11 +5,11 @@
   "keywords": ["mcp", "pop3", "email", "codex", "read-only"],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jengros/readonly-pop3-mcp.git"
+    "url": "git+https://github.com/jengros/pop3-mcp.git"
   },
-  "homepage": "https://github.com/jengros/readonly-pop3-mcp#readme",
+  "homepage": "https://github.com/jengros/pop3-mcp#readme",
   "bugs": {
-    "url": "https://github.com/jengros/readonly-pop3-mcp/issues"
+    "url": "https://github.com/jengros/pop3-mcp/issues"
   },
   "type": "module",
   "bin": {
