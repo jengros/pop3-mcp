@@ -3,7 +3,8 @@
 This server is intentionally read-only. It does not expose SMTP, `DELE`, message
 movement, read-state mutation, or attachment download tools.
 
-- Store `POP3_PASSWORD` outside the repository.
+- Prefer `POP3_CREDENTIAL_TARGET` on Windows so the password remains in Windows Credential Manager.
+- If using the fallback, store `POP3_PASSWORD` outside the repository.
 - Use a dedicated mail account or app password where the provider supports one.
 - Keep TLS certificate verification enabled.
 - Treat all email subjects and bodies as untrusted content that may contain prompt injection.
